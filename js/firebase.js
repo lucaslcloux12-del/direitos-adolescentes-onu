@@ -18,4 +18,4 @@ export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getDatabase(app);
 
-console.log("%cFirebase carregado com sucesso!", "color:#009edb");
+console.log("%cFirebase Auth + Database carregados", "color:#009edb");
