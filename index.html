@@ -145,3 +145,21 @@
 
 </body>
 </html>
+  <!-- ==================== PARTE 4 - FUNÇÕES EXTRAS E INICIALIZAÇÃO ==================== -->
+  <script>
+    // Função para editar título e frase depois (você pode mudar aqui)
+    function atualizarTituloENovaFrase() {
+      // Mude o texto aqui depois:
+      document.getElementById('tituloPrincipal').textContent = "Declaração dos Direitos dos Adolescentes";
+      document.getElementById('frasePrincipal').textContent = "Tudo que eu aprendo é para salvar a minha vida, da minha família e da minha comunidade.";
+    }
+
+    // Chama a função ao carregar a página
+    window.onload = () => {
+      atualizarTituloENovaFrase();
+      console.log("%c✅ SITE COMPLETO CARREGADO - Topbar + Chat funcionando", "color:#009edb; font-size:18px");
+    };
+  </script>
+
+</body>
+</html>
