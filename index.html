@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
   
-  <!-- Firebase -->
   <script type="module" src="js/firebase.js"></script>
   <script type="module" src="js/app.js"></script>
 </head>
@@ -25,9 +24,8 @@
         </a>
         
         <div class="flex items-center gap-6">
-          <!-- Botão de Login -->
           <button onclick="mostrarModalLogin()" id="loginBtn"
-                  class="bg-[#009edb] hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-medium flex items-center gap-2 transition-all">
+                  class="bg-white border border-gray-300 hover:border-gray-400 text-gray-700 px-6 py-2.5 rounded-2xl font-medium flex items-center gap-3 transition-all">
             <i class="fa-solid fa-right-to-bracket"></i>
             <span>Entrar</span>
           </button>
@@ -38,11 +36,10 @@
         </div>
       </div>
 
+      <!-- resto da topbar igual ao anterior (logo, menu, busca) -->
       <div class="flex items-center justify-between px-6 py-5">
         <div class="flex items-center gap-4">
-          <!-- Logo da ONU - vamos usar uma URL direta e confiável -->
-          <img id="logoONU" src="https://brasil.un.org/sites/default/files/2020-09/UN-Brasil-logo.png" 
-               alt="Nações Unidas Brasil" class="h-14">
+          <img src="https://brasil.un.org/sites/default/files/2020-09/UN-Brasil-logo.png" alt="Nações Unidas Brasil" class="h-14">
           <div>
             <span class="text-3xl font-bold un-blue">Nações Unidas</span>
             <span class="block text-sm -mt-1">Brasil</span>
@@ -75,7 +72,6 @@
         <h1 class="text-5xl font-bold text-gray-900 leading-tight">Declaração dos Direitos dos Adolescentes</h1>
         <p class="mt-4 text-xl text-gray-600 max-w-2xl">"Tudo que eu aprendo é para salvar a minha vida, da minha família e da minha comunidade."</p>
       </div>
-      
       <button onclick="ativarModoEdicao()" id="editBtn" 
               class="hidden bg-[#009edb] hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-semibold flex items-center gap-3 shadow-lg">
         <i class="fa-solid fa-pen-to-square"></i>
@@ -86,64 +82,43 @@
     <div id="direitosContainer" class="space-y-20"></div>
   </main>
 
-  <!-- Bolinha do Chat -->
-  <div onclick="toggleChat()" id="chatBubble"
-       class="chat-bubble fixed bottom-8 left-8 w-20 h-20 bg-[#009edb] rounded-full flex items-center justify-center shadow-2xl z-[9999] border-4 border-white cursor-pointer hover:scale-110 transition-transform">
-    <img src="https://brasil.un.org/sites/default/files/2020-09/UN-Brasil-logo.png" 
-         class="w-12 h-12 object-contain filter invert" alt="Chat ONU">
+  <!-- Bolinha do Chat (mesma de antes) -->
+  <div onclick="toggleChat()" id="chatBubble" class="chat-bubble fixed bottom-8 left-8 w-20 h-20 bg-[#009edb] rounded-full flex items-center justify-center shadow-2xl z-[9999] border-4 border-white cursor-pointer hover:scale-110 transition-transform">
+    <img src="https://brasil.un.org/sites/default/files/2020-09/UN-Brasil-logo.png" class="w-12 h-12 object-contain filter invert" alt="Chat">
   </div>
 
-  <!-- Janela do Chat -->
-  <div id="chatWindow" class="hidden fixed bottom-32 left-8 w-96 bg-white rounded-3xl shadow-2xl overflow-hidden z-[10000] border border-gray-100">
+  <!-- Janela Chat (mesma) -->
+  <div id="chatWindow" class="hidden fixed bottom-32 left-8 w-96 bg-white rounded-3xl shadow-2xl overflow-hidden z-[10000]">
+    <!-- ... mesmo conteúdo do chat anterior ... -->
     <div class="bg-[#009edb] text-white p-5 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <i class="fa-solid fa-comments text-2xl"></i>
-        <span class="font-semibold">Chat em Tempo Real</span>
-      </div>
+      <div class="flex items-center gap-3"><i class="fa-solid fa-comments text-2xl"></i><span class="font-semibold">Chat em Tempo Real</span></div>
       <i onclick="toggleChat()" class="fa-solid fa-xmark text-2xl cursor-pointer"></i>
     </div>
     <div id="chatMessages" class="h-96 p-5 overflow-y-auto bg-gray-50 space-y-4 text-sm"></div>
     <div class="p-5 border-t bg-white flex gap-3">
-      <input id="chatInput" type="text" placeholder="Digite sua mensagem..." 
-             class="flex-1 border border-gray-300 rounded-2xl px-5 py-3 focus:outline-none focus:border-blue-500">
-      <button onclick="enviarMensagem()" 
-              class="bg-[#009edb] text-white w-12 h-12 rounded-2xl flex items-center justify-center hover:bg-blue-700 transition-colors">
-        <i class="fa-solid fa-paper-plane"></i>
-      </button>
+      <input id="chatInput" type="text" placeholder="Digite sua mensagem..." class="flex-1 border border-gray-300 rounded-2xl px-5 py-3 focus:outline-none focus:border-blue-500">
+      <button onclick="enviarMensagem()" class="bg-[#009edb] text-white w-12 h-12 rounded-2xl flex items-center justify-center hover:bg-blue-700">➤</button>
     </div>
   </div>
 
-  <!-- Modal de Login -->
+  <!-- Modal de Login com Google -->
   <div id="modalLogin" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[99999]">
     <div class="bg-white rounded-3xl p-10 w-full max-w-md mx-4 shadow-2xl">
-      <h2 class="text-2xl font-bold text-center mb-8">Entrar na Conta</h2>
+      <h2 class="text-2xl font-bold text-center mb-8">Entrar na Área de Edição</h2>
       
-      <div class="space-y-6">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">E-mail</label>
-          <input id="loginEmail" type="email" placeholder="lucaslcloux12@gmail.com" 
-                 class="w-full border border-gray-300 rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-500">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Senha</label>
-          <input id="loginSenha" type="password" placeholder="Digite sua senha" 
-                 class="w-full border border-gray-300 rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-500">
-        </div>
-      </div>
-
-      <button onclick="fazerLogin()" 
-              class="mt-8 w-full bg-[#009edb] hover:bg-blue-700 text-white py-4 rounded-2xl font-semibold text-lg transition-all">
-        Entrar
+      <button onclick="loginComGoogle()" 
+              class="w-full flex items-center justify-center gap-4 bg-white border border-gray-300 hover:border-gray-400 py-4 rounded-2xl font-medium text-lg transition-all mb-6">
+        <img src="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png" alt="Google" class="w-6 h-6">
+        <span>Entrar com Google</span>
       </button>
 
-      <button onclick="fecharModalLogin()" 
-              class="mt-4 w-full text-gray-500 hover:text-gray-700 py-3">
-        Cancelar
-      </button>
+      <p class="text-center text-sm text-gray-500">Apenas o responsável pelo projeto pode editar o conteúdo.</p>
+
+      <button onclick="fecharModalLogin()" class="mt-8 w-full text-gray-500 hover:text-gray-700 py-3">Cancelar</button>
     </div>
   </div>
 
-  <!-- Footer -->
+  <!-- Footer (mesmo de antes) -->
   <footer class="bg-white border-t mt-24 py-16">
     <div class="max-w-7xl mx-auto px-6 text-center text-gray-600">
       <h2 class="font-semibold text-xl mb-3 text-gray-800">Nações Unidas Brasil</h2>
@@ -155,11 +130,10 @@
         +55 (61) 3038-9300
       </p>
       <div class="mt-12 text-xs text-gray-400">
-        Feito por <span class="font-medium text-gray-600">Lucas Leão Cloux</span> / Equipe Nº 3<br>
+        Feito por Lucas Leão Cloux / Equipe Nº 3<br>
         Integrantes: Adriataielly, Ícaro e Pyetro
       </div>
     </div>
   </footer>
-
 </body>
 </html>
