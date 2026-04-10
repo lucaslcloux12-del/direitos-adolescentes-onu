@@ -7,7 +7,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -22,46 +21,26 @@
 
   <!-- TOPBAR -->
   <header class="top-bar bg-white shadow-sm sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto">
-      <div class="flex items-center justify-between px-6 py-2 text-sm border-b">
-        <a href="#" onclick="location.reload()" class="flex items-center gap-2">
-          <i class="fa-solid fa-house text-xl"></i>
-          <span class="font-medium">Bem-vindo às Nações Unidas</span>
-        </a>
-        <div class="flex items-center gap-6">
-          <button onclick="mostrarModalLogin()" id="loginBtn"
-                  class="bg-[#009edb] text-white px-6 py-2 rounded-2xl font-medium flex items-center gap-2">
-            <i class="fa-solid fa-right-to-bracket"></i> Entrar
-          </button>
-          <span id="userEmail" class="hidden text-sm font-medium"></span>
-          <button onclick="logout()" id="logoutBtn" class="hidden text-red-600">Sair</button>
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <img src="https://brasil.un.org/sites/default/files/2020-09/UN-Brasil-logo.png" class="h-14">
+        <div>
+          <span class="text-3xl font-bold un-blue">Nações Unidas</span>
+          <span class="block text-sm -mt-1">Brasil</span>
         </div>
       </div>
-      <div class="flex items-center justify-between px-6 py-5">
-        <div class="flex items-center gap-4">
-          <img src="https://brasil.un.org/sites/default/files/2020-09/UN-Brasil-logo.png" class="h-14">
-          <div>
-            <span class="text-3xl font-bold un-blue">Nações Unidas</span>
-            <span class="block text-sm -mt-1">Brasil</span>
-          </div>
-        </div>
-        <div class="relative w-96">
-          <input id="searchInput" type="text" placeholder="Busque direitos dos adolescentes..." 
-                 class="w-full bg-white border border-gray-300 rounded-full py-3.5 px-6 pr-14">
-          <button onclick="realizarBusca()" class="absolute right-6 top-1/2 -translate-y-1/2 text-blue-600">
-            <i class="fa-solid fa-magnifying-glass text-2xl"></i>
-          </button>
-        </div>
-      </div>
+      <h1 class="text-4xl font-bold">Declaração dos Direitos dos Adolescentes</h1>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-6 py-12">
-    <h1 class="text-5xl font-bold text-center mb-4">Declaração dos Direitos dos Adolescentes</h1>
-    <button onclick="ativarEdicao()" id="editBtn" class="hidden mx-auto block bg-[#009edb] text-white px-8 py-4 rounded-2xl font-semibold text-lg">
-      ✏️ Editar Declaração
+  <main class="max-w-7xl mx-auto px-6 py-10">
+    <div id="conteudo" class="space-y-12"></div>
+
+    <!-- Botão Adicionar Tópico -->
+    <button onclick="adicionarTopico()" 
+            class="mt-12 mx-auto block bg-green-600 hover:bg-green-700 text-white px-10 py-5 rounded-3xl text-xl font-semibold flex items-center gap-3">
+      <i class="fa-solid fa-plus"></i> Adicionar Novo Tópico
     </button>
-    <div id="conteudo" class="mt-12 space-y-12"></div>
   </main>
 
   <!-- BOLINHA DO CHAT -->
@@ -72,32 +51,21 @@
 
   <!-- JANELA DO CHAT -->
   <div id="chatWindow" class="hidden fixed bottom-28 left-8 w-96 bg-white rounded-3xl shadow-2xl z-[10000] overflow-hidden">
-    <div class="bg-[#009edb] text-white p-4 flex justify-between">
+    <div class="bg-[#009edb] text-white p-4 flex justify-between items-center">
       <span class="font-semibold">Chat em Tempo Real</span>
-      <i onclick="toggleChat()" class="fa-solid fa-xmark cursor-pointer text-xl"></i>
+      <i onclick="toggleChat()" class="fa-solid fa-xmark cursor-pointer"></i>
     </div>
-    <div id="chatMessages" class="h-80 p-4 overflow-y-auto bg-gray-50"></div>
+    <div id="chatMessages" class="h-80 p-4 overflow-y-auto bg-gray-50 space-y-3"></div>
     <div class="p-4 border-t flex gap-2">
-      <input id="chatInput" type="text" placeholder="Digite sua mensagem..." class="flex-1 border rounded-2xl px-4 py-3">
-      <button onclick="enviarMensagem()" class="bg-[#009edb] text-white px-6 rounded-2xl">Enviar</button>
-    </div>
-  </div>
-
-  <!-- MODAL LOGIN -->
-  <div id="modalLogin" class="hidden fixed inset-0 bg-black/70 z-[99999] flex items-center justify-center">
-    <div class="bg-white rounded-3xl p-10 w-full max-w-md">
-      <h2 class="text-2xl font-bold text-center mb-8">Entrar com Google</h2>
-      <button onclick="loginComGoogle()" 
-              class="w-full flex items-center justify-center gap-4 border border-gray-300 hover:bg-gray-50 py-4 rounded-2xl text-lg font-medium">
-        <img src="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png" class="w-6">
-        Entrar com Google
-      </button>
-      <button onclick="fecharModalLogin()" class="mt-6 w-full text-gray-500">Cancelar</button>
+      <input id="chatInput" type="text" placeholder="Digite sua mensagem..." 
+             class="flex-1 border border-gray-300 rounded-2xl px-5 py-3 focus:outline-none">
+      <button onclick="enviarMensagem()" 
+              class="bg-[#009edb] text-white px-8 rounded-2xl font-medium">Enviar</button>
     </div>
   </div>
 
   <script>
-    // ==================== CONFIGURAÇÃO FIREBASE (COLOQUE SEUS DADOS AQUI) ====================
+    // ==================== SEUS DADOS DO FIREBASE ====================
     const firebaseConfig = {
       apiKey: "SUA_API_KEY_AQUI",
       authDomain: "SEU-PROJETO.firebaseapp.com",
@@ -109,70 +77,63 @@
     };
 
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
     const db = firebase.database();
 
-    let isEditing = false;
     let direitos = [];
 
-    // ==================== LOGIN GOOGLE ====================
-    window.loginComGoogle = async () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      try {
-        await auth.signInWithPopup(provider);
-        fecharModalLogin();
-      } catch (error) {
-        alert("Erro no login: " + error.message);
-      }
-    };
-
-    window.fecharModalLogin = () => document.getElementById('modalLogin').classList.add('hidden');
-    window.mostrarModalLogin = () => document.getElementById('modalLogin').classList.remove('hidden');
-
-    // Monitora login
-    auth.onAuthStateChanged(user => {
-      if (user && user.email === "lucaslcloux12@gmail.com") {
-        isEditing = true;
-        document.getElementById('editBtn').classList.remove('hidden');
-        document.getElementById('userEmail').classList.remove('hidden');
-        document.getElementById('userEmail').textContent = "lucaslcl...@gmail.com";
-        document.getElementById('logoutBtn').classList.remove('hidden');
-        carregarDireitos();
-      }
-    });
-
-    window.logout = () => auth.signOut();
-
-    // ==================== EDIÇÃO ====================
+    // ==================== CARREGAR E MOSTRAR TÓPICOS ====================
     function carregarDireitos() {
-      db.ref('direitosAdolescentes').on('value', snapshot => {
+      db.ref('direitosAdolescentes').on('value', (snapshot) => {
         direitos = snapshot.val() || [];
-        renderDireitos();
+        renderizar();
       });
     }
 
-    function renderDireitos() {
+    function renderizar() {
       const container = document.getElementById('conteudo');
       container.innerHTML = '';
 
       direitos.forEach((item, index) => {
         const div = document.createElement('div');
-        div.className = "bg-white border border-gray-200 rounded-3xl p-10";
+        div.className = "bg-white border border-gray-200 rounded-3xl p-10 shadow-sm";
         div.innerHTML = `
-          <input type="text" value="${item.titulo}" class="text-3xl font-bold w-full border-b focus:border-blue-500 outline-none ${isEditing ? '' : 'pointer-events-none'}" onchange="atualizarTitulo(${index}, this.value)">
-          <textarea class="w-full mt-6 h-40 border border-gray-300 rounded-2xl p-5 ${isEditing ? '' : 'pointer-events-none bg-gray-50'}" onchange="atualizarTexto(${index}, this.value)">${item.texto}</textarea>
-          <input type="text" value="${item.imagem || ''}" placeholder="Link da imagem" class="w-full mt-6 border border-gray-300 rounded-2xl p-4 ${isEditing ? '' : 'pointer-events-none bg-gray-50'}" onchange="atualizarImagem(${index}, this.value)">
-          ${item.imagem ? `<img src="${item.imagem}" class="mt-6 w-full h-64 object-cover rounded-2xl">` : ''}
+          <h2 class="text-3xl font-bold mb-4">${item.titulo}</h2>
+          <textarea class="w-full h-40 border border-gray-300 rounded-2xl p-6 text-base resize-y" 
+                    onchange="atualizarTexto(${index}, this.value)">${item.texto || 'Coloque a descrição aqui...'}</textarea>
+          
+          <div class="mt-8">
+            <p class="text-sm text-gray-500 mb-2">Link da Foto (cole aqui):</p>
+            <input type="text" value="${item.imagem || ''}" placeholder="https://exemplo.com/foto.jpg" 
+                   class="w-full border border-gray-300 rounded-2xl p-4 text-sm" 
+                   onchange="atualizarImagem(${index}, this.value)">
+            ${item.imagem ? `<img src="${item.imagem}" class="mt-6 w-full h-64 object-cover rounded-2xl shadow">` : ''}
+          </div>
         `;
         container.appendChild(div);
       });
     }
 
-    window.atualizarTitulo = (i, v) => { direitos[i].titulo = v; db.ref('direitosAdolescentes').set(direitos); };
-    window.atualizarTexto  = (i, v) => { direitos[i].texto = v; db.ref('direitosAdolescentes').set(direitos); };
-    window.atualizarImagem = (i, v) => { direitos[i].imagem = v; db.ref('direitosAdolescentes').set(direitos); renderDireitos(); };
+    window.atualizarTexto = (index, valor) => {
+      direitos[index].texto = valor;
+      db.ref('direitosAdolescentes').set(direitos);
+    };
 
-    // ==================== CHAT ====================
+    window.atualizarImagem = (index, link) => {
+      direitos[index].imagem = link;
+      db.ref('direitosAdolescentes').set(direitos);
+      renderizar();
+    };
+
+    window.adicionarTopico = () => {
+      direitos.push({
+        titulo: "Novo Direito do Adolescente",
+        texto: "Coloque a descrição aqui (você pode editar depois)...",
+        imagem: ""
+      });
+      db.ref('direitosAdolescentes').set(direitos);
+    };
+
+    // ==================== CHAT SEM LOGIN ====================
     window.toggleChat = () => {
       document.getElementById('chatWindow').classList.toggle('hidden');
       document.getElementById('chatBubble').classList.toggle('rotated');
@@ -183,15 +144,9 @@
       const texto = input.value.trim();
       if (!texto) return;
 
-      const user = auth.currentUser;
-      if (!user) {
-        alert("Faça login para enviar mensagem");
-        return;
-      }
-
       db.ref('chatMensagens').push({
         texto: texto,
-        nome: user.email.split('@')[0],
+        nome: "Aluno",
         timestamp: Date.now()
       });
 
@@ -199,24 +154,23 @@
     };
 
     // Carregar chat em tempo real
-    db.ref('chatMensagens').on('value', snapshot => {
+    db.ref('chatMensagens').on('value', (snapshot) => {
       const msgs = snapshot.val() || {};
       const div = document.getElementById('chatMessages');
       div.innerHTML = '';
-      Object.values(msgs).forEach(msg => {
-        const m = document.createElement('div');
-        m.className = "mb-3";
-        m.innerHTML = `<div class="inline-block px-4 py-2 rounded-3xl ${msg.nome.includes('lucas') ? 'bg-blue-600 text-white' : 'bg-gray-200'}">${msg.nome}: ${msg.texto}</div>`;
-        div.appendChild(m);
+      Object.values(msgs).forEach(m => {
+        const el = document.createElement('div');
+        el.className = "flex justify-start";
+        el.innerHTML = `<div class="bg-gray-200 px-5 py-3 rounded-3xl max-w-[80%]">${m.nome}: ${m.texto}</div>`;
+        div.appendChild(el);
       });
       div.scrollTop = div.scrollHeight;
     });
 
-    window.realizarBusca = () => alert("Busca ainda em desenvolvimento");
-
-    // Inicializa com alguns tópicos
+    // Inicializar
     window.onload = () => {
-      console.log("%c✅ Site carregado - Teste login com Google e chat", "color:#009edb; font-size:16px");
+      carregarDireitos();
+      console.log("%c✅ Site pronto - Sem login, chat funcionando, edição direta", "color:#009edb; font-size:16px");
     };
   </script>
 </body>
