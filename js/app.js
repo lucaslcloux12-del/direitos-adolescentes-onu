@@ -1,4 +1,4 @@
-// js/app.js
+// js/app.js - VERSÃO FINAL
 import { ref, onValue, set, push } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
 import { auth } from "./firebase.js";
 import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
@@ -14,7 +14,7 @@ const logoutBtn = document.getElementById('logoutBtn');
 const modalLogin = document.getElementById('modalLogin');
 const chatMessages = document.getElementById('chatMessages');
 
-// Monitorar login com Google
+// ==================== LOGIN COM GOOGLE ====================
 onAuthStateChanged(auth, (user) => {
   if (user) {
     if (user.email === "lucaslcloux12@gmail.com") {
@@ -25,7 +25,7 @@ onAuthStateChanged(auth, (user) => {
       editBtn.classList.remove('hidden');
       renderDireitos();
     } else {
-      alert("Acesso negado.\n\nSomente lucaslcloux12@gmail.com pode editar.");
+      alert("Acesso negado.\n\nApenas lucaslcloux12@gmail.com pode editar o conteúdo.");
       signOut(auth);
     }
   } else {
@@ -36,26 +36,23 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// ==================== LOGIN COM GOOGLE ====================
 window.mostrarModalLogin = () => modalLogin.classList.remove('hidden');
 window.fecharModalLogin = () => modalLogin.classList.add('hidden');
 
 window.loginComGoogle = async () => {
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: 'select_account' });
-
   try {
     await signInWithPopup(auth, provider);
     fecharModalLogin();
   } catch (error) {
-    console.error(error);
-    alert("Erro ao fazer login: " + error.message);
+    alert("Erro no login: " + error.message);
   }
 };
 
 window.logout = () => signOut(auth);
 
-// ==================== EDIÇÃO DE TÓPICOS ====================
+// ==================== EDIÇÃO ====================
 function renderDireitos() {
   direitosContainer.innerHTML = '';
 
@@ -78,14 +75,14 @@ function renderDireitos() {
                     onchange="window.atualizarTexto(${index}, this.value)">${item.texto}</textarea>
         </div>
         <div class="lg:col-span-5">
-          <div class="text-sm text-gray-500 mb-3 font-medium">Link da Imagem</div>
-          <input type="text" value="${item.imagem || ''}" placeholder="https://exemplo.com/imagem.jpg"
+          <div class="text-sm text-gray-500 mb-3 font-medium">Link da Imagem (opcional)</div>
+          <input type="text" value="${item.imagem || ''}" placeholder="Cole o link da imagem aqui"
                  class="w-full border border-gray-300 rounded-2xl px-5 py-4 text-sm focus:border-blue-500 outline-none ${isEditing ? '' : 'pointer-events-none bg-gray-50'}"
                  onchange="window.atualizarImagem(${index}, this.value)">
           
           ${item.imagem ? 
-            `<img src="${item.imagem}" class="mt-6 w-full h-64 object-cover rounded-2xl shadow-md">` : 
-            `<div class="mt-6 h-64 bg-gray-100 rounded-2xl flex items-center justify-center text-gray-400 text-sm">Nenhuma imagem adicionada</div>`
+            `<img src="${item.imagem}" class="mt-6 w-full h-64 object-cover rounded-2xl shadow-md" alt="${item.titulo}">` : 
+            `<div class="mt-6 h-64 bg-gray-100 rounded-2xl flex items-center justify-center text-gray-400 text-center px-6">Nenhuma imagem adicionada ainda</div>`
           }
         </div>
       </div>
@@ -107,17 +104,13 @@ window.atualizarTexto = (index, valor) => { direitos[index].texto = valor; salva
 window.atualizarImagem = (index, valor) => { direitos[index].imagem = valor; salvarNoFirebase(); renderDireitos(); };
 
 window.adicionarTopico = () => {
-  direitos.push({
-    titulo: "Novo Direito do Adolescente",
-    texto: "Descreva aqui o direito...",
-    imagem: ""
-  });
+  direitos.push({ titulo: "Novo Direito do Adolescente", texto: "Escreva o texto aqui...", imagem: "" });
   renderDireitos();
   salvarNoFirebase();
 };
 
 window.removerTopico = (index) => {
-  if (confirm("Remover este tópico permanentemente?")) {
+  if (confirm("Remover este tópico?")) {
     direitos.splice(index, 1);
     renderDireitos();
     salvarNoFirebase();
@@ -136,39 +129,39 @@ function carregarDireitos() {
   });
 }
 
+// 30 Tópicos Iniciais (já com títulos bonitos)
 function criar30TopicosIniciais() {
   return [
-    { titulo: "1. Direito à Vida, Sobrevivência e Desenvolvimento", texto: "Todo adolescente tem direito à vida, à sobrevivência e ao desenvolvimento pleno em condições dignas.", imagem: "https://picsum.photos/id/1015/800/450" },
-    { titulo: "2. Direito à Educação de Qualidade", texto: "Acesso a uma educação inclusiva, equitativa e de qualidade que prepare para a vida adulta.", imagem: "https://picsum.photos/id/201/800/450" },
-    { titulo: "3. Direito à Saúde Integral", texto: "Acesso universal a serviços de saúde física, mental e sexual e reprodutiva de qualidade.", imagem: "" },
-    { titulo: "4. Direito à Proteção contra Violência", texto: "Proteção contra todas as formas de violência física, psicológica, sexual e digital.", imagem: "https://picsum.photos/id/237/800/450" },
-    { titulo: "5. Direito à Participação", texto: "Ser ouvido e participar das decisões que afetam sua vida, família e comunidade.", imagem: "" },
+    { titulo: "1. Direito à Vida, Sobrevivência e Desenvolvimento", texto: "Todo adolescente tem direito à vida, à sobrevivência e ao desenvolvimento pleno em um ambiente seguro e saudável.", imagem: "https://picsum.photos/id/1015/800/450" },
+    { titulo: "2. Direito à Educação Inclusiva e de Qualidade", texto: "Acesso a uma educação gratuita, inclusiva e de qualidade que prepare para a vida e o trabalho.", imagem: "https://picsum.photos/id/201/800/450" },
+    { titulo: "3. Direito à Saúde Integral", texto: "Acesso universal a serviços de saúde física, mental, sexual e reprodutiva.", imagem: "" },
+    { titulo: "4. Direito à Proteção contra Toda Forma de Violência", texto: "Proteção contra violência física, psicológica, sexual e online.", imagem: "https://picsum.photos/id/237/800/450" },
+    { titulo: "5. Direito à Participação e Ser Ouvido", texto: "Ser ouvido em todas as decisões que afetam sua vida, família e comunidade.", imagem: "" },
     { titulo: "6. Direito à Liberdade de Expressão", texto: "Expressar suas opiniões, ideias e sentimentos de forma livre e responsável.", imagem: "https://picsum.photos/id/133/800/450" },
-    { titulo: "7. Direito à Não Discriminação", texto: "Ser tratado com igualdade, independentemente de raça, gênero, orientação sexual, deficiência ou origem.", imagem: "" },
-    { titulo: "8. Direito ao Lazer e Cultura", texto: "Acesso a atividades culturais, esportivas e de lazer que promovam seu desenvolvimento.", imagem: "https://picsum.photos/id/180/800/450" },
-    { titulo: "9. Direito à Proteção no Ambiente Digital", texto: "Segurança online, privacidade e proteção contra bullying e exploração na internet.", imagem: "" },
+    { titulo: "7. Direito à Não Discriminação", texto: "Ser tratado com igualdade, sem distinção de raça, gênero, orientação sexual, deficiência ou origem.", imagem: "" },
+    { titulo: "8. Direito ao Lazer, Esporte e Cultura", texto: "Acesso a atividades culturais, esportivas e de lazer que promovam seu bem-estar.", imagem: "https://picsum.photos/id/180/800/450" },
+    { titulo: "9. Direito à Proteção no Mundo Digital", texto: "Segurança online, privacidade e proteção contra bullying e exploração na internet.", imagem: "" },
     { titulo: "10. Direito à Alimentação Adequada", texto: "Acesso a alimentos nutritivos e suficientes para um crescimento saudável.", imagem: "https://picsum.photos/id/292/800/450" },
-    // ... (os outros 20 tópicos continuam abaixo para não ficar muito longo)
-    { titulo: "11. Direito ao Trabalho Protegido", texto: "Proteção contra trabalho infantil e exploração, com direito a condições justas se for maior de 16 anos.", imagem: "" },
-    { titulo: "12. Direito à Identidade e Nome", texto: "Ter seu nome, nacionalidade e identidade respeitados e registrados.", imagem: "" },
-    { titulo: "13. Direito à Família e Convívio", texto: "Conviver com a família ou em ambiente que garanta afeto e proteção.", imagem: "" },
+    { titulo: "11. Direito ao Trabalho Protegido", texto: "Proteção contra trabalho infantil e exploração.", imagem: "" },
+    { titulo: "12. Direito à Identidade", texto: "Ter seu nome, nacionalidade e identidade respeitados.", imagem: "" },
+    { titulo: "13. Direito ao Convívio Familiar", texto: "Conviver com a família ou em ambiente que garanta afeto e proteção.", imagem: "" },
     { titulo: "14. Direito à Moradia Digna", texto: "Viver em um ambiente seguro, adequado e saudável.", imagem: "https://picsum.photos/id/316/800/450" },
-    { titulo: "15. Direito à Justiça e Devido Processo", texto: "Ser tratado com justiça e ter direitos garantidos no sistema judicial.", imagem: "" },
-    { titulo: "16. Direito ao Esporte e Atividade Física", texto: "Praticar esportes e atividades físicas em ambiente seguro.", imagem: "" },
-    { titulo: "17. Direito à Orientação Profissional", texto: "Receber orientação para escolher seu futuro profissional.", imagem: "" },
-    { titulo: "18. Direito à Liberdade Religiosa", texto: "Praticar ou não praticar sua religião sem sofrer discriminação.", imagem: "" },
-    { titulo: "19. Direito à Proteção Ambiental", texto: "Viver em um ambiente equilibrado e participar de ações de preservação.", imagem: "" },
-    { titulo: "20. Direito ao Acesso à Informação", texto: "Ter acesso a informações claras sobre seus direitos e oportunidades.", imagem: "" },
-    { titulo: "21. Direito à Saúde Mental", texto: "Acesso a suporte psicológico e emocional quando necessário.", imagem: "https://picsum.photos/id/201/800/450" },
-    { titulo: "22. Direito à Igualdade de Gênero", texto: "Ser tratado com igualdade independentemente do gênero.", imagem: "" },
-    { titulo: "23. Direito à Inclusão de Pessoas com Deficiência", texto: "Acesso a todas as oportunidades sem barreiras.", imagem: "" },
-    { titulo: "24. Direito ao Descanso e Férias", texto: "Ter tempo para descanso, brincar e se divertir.", imagem: "" },
-    { titulo: "25. Direito à Proteção contra Exploração", texto: "Proteção contra qualquer forma de exploração sexual ou laboral.", imagem: "" },
-    { titulo: "26. Direito à Cidadania Ativa", texto: "Participar da vida cidadã e contribuir com a sociedade.", imagem: "" },
-    { titulo: "27. Direito ao Respeito à Diversidade", texto: "Ter sua cultura, crenças e identidade respeitadas.", imagem: "" },
-    { titulo: "28. Direito à Orientação Sexual e Afetiva", texto: "Ser respeitado em sua orientação sexual sem sofrer preconceito.", imagem: "" },
-    { titulo: "29. Direito à Transição Segura para a Vida Adulta", texto: "Receber apoio para a transição da adolescência para a vida adulta.", imagem: "" },
-    { titulo: "30. Direito a Sonhar e Realizar", texto: "Ter o direito de sonhar, planejar e construir um futuro melhor.", imagem: "https://picsum.photos/id/1015/800/450" }
+    { titulo: "15. Direito à Justiça", texto: "Ser tratado com justiça e ter direitos garantidos no sistema judicial.", imagem: "" },
+    { titulo: "16. Direito à Saúde Mental", texto: "Acesso a suporte psicológico e emocional quando necessário.", imagem: "https://picsum.photos/id/201/800/450" },
+    { titulo: "17. Direito à Igualdade de Gênero", texto: "Ser tratado com igualdade independentemente do gênero.", imagem: "" },
+    { titulo: "18. Direito à Inclusão", texto: "Acesso pleno para adolescentes com deficiência.", imagem: "" },
+    { titulo: "19. Direito ao Descanso e Diversão", texto: "Ter tempo para brincar, descansar e se divertir.", imagem: "" },
+    { titulo: "20. Direito à Proteção contra Exploração", texto: "Proteção contra qualquer forma de exploração sexual ou laboral.", imagem: "" },
+    { titulo: "21. Direito à Orientação Profissional", texto: "Receber orientação para escolher seu futuro profissional.", imagem: "" },
+    { titulo: "22. Direito à Liberdade Religiosa", texto: "Praticar ou não praticar sua religião sem discriminação.", imagem: "" },
+    { titulo: "23. Direito ao Acesso à Informação", texto: "Ter acesso a informações claras sobre seus direitos.", imagem: "" },
+    { titulo: "24. Direito à Cidadania Ativa", texto: "Participar da vida cidadã e contribuir com a sociedade.", imagem: "" },
+    { titulo: "25. Direito ao Respeito à Diversidade", texto: "Ter sua cultura, crenças e identidade respeitadas.", imagem: "" },
+    { titulo: "26. Direito à Orientação Sexual e Afetiva", texto: "Ser respeitado em sua orientação sexual sem preconceito.", imagem: "" },
+    { titulo: "27. Direito à Transição para a Vida Adulta", texto: "Receber apoio durante a transição da adolescência para a vida adulta.", imagem: "" },
+    { titulo: "28. Direito ao Esporte e Atividade Física", texto: "Praticar esportes em ambiente seguro e inclusivo.", imagem: "" },
+    { titulo: "29. Direito à Proteção Ambiental", texto: "Viver em um ambiente equilibrado e participar de ações sustentáveis.", imagem: "" },
+    { titulo: "30. Direito a Sonhar e Construir o Futuro", texto: "Ter o direito de sonhar, planejar e construir um futuro melhor para si e para a sociedade.", imagem: "https://picsum.photos/id/1015/800/450" }
   ];
 }
 
@@ -200,7 +193,7 @@ window.enviarMensagem = () => {
 
   const user = auth.currentUser;
   if (!user) {
-    alert("Faça login para enviar mensagens no chat.");
+    alert("Faça login com Google para enviar mensagens.");
     return;
   }
 
@@ -221,14 +214,13 @@ window.toggleChat = () => {
   bubble.classList.toggle('rotated');
 };
 
-// Busca
 window.realizarBusca = () => {
   const termo = document.getElementById('searchInput').value.trim();
-  if (termo) alert(`🔍 Buscando "${termo}" nos direitos dos adolescentes...`);
+  if (termo) alert(`🔍 Buscando "${termo}" na Declaração dos Direitos dos Adolescentes...`);
 };
 
 // Inicialização
 window.onload = () => {
   carregarDireitos();
-  console.log("%c✅ Passo 5 concluído - 30 tópicos + Chat em tempo real + Login Google", "color:#009edb; font-size:18px; font-weight:bold");
+  console.log("%c✅ SITE FINAL PRONTO - Login Google + 30 Tópicos + Chat em Tempo Real", "color:#009edb; font-size:18px; font-weight:bold");
 };
