@@ -1,159 +1,301 @@
-// js/app.js - VERSÃO DE EMERGÊNCIA (trabalho amanhã)
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Declaração dos Direitos dos Adolescentes | Nações Unidas Brasil</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .un-blue { color: #009edb; }
+    .top-bar { border-bottom: 4px solid #009edb; }
+    .chat-bubble { transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+    .chat-bubble.rotated { transform: rotate(180deg); }
+  </style>
+</head>
+<body class="bg-white">
 
-import { ref, onValue, set, push } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
-import { auth } from "./firebase.js";
-import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
-
-let direitos = [];
-let isEditing = false;
-
-// Elementos
-const direitosContainer = document.getElementById('direitosContainer');
-const editBtn = document.getElementById('editBtn');
-const userEmailEl = document.getElementById('userEmail');
-const logoutBtn = document.getElementById('logoutBtn');
-const modalLogin = document.getElementById('modalLogin');
-const chatWindow = document.getElementById('chatWindow');
-const chatBubble = document.getElementById('chatBubble');
-const chatMessages = document.getElementById('chatMessages');
-const chatInput = document.getElementById('chatInput');
-
-// ==================== LOGIN GOOGLE ====================
-onAuthStateChanged(auth, (user) => {
-  console.log("🔐 Auth State Changed →", user ? user.email : "Nenhum usuário");
-
-  if (user && user.email === "lucaslcloux12@gmail.com") {
-    isEditing = true;
-    userEmailEl.classList.remove('hidden');
-    userEmailEl.textContent = "lucaslcl...@gmail.com";
-    logoutBtn.classList.remove('hidden');
-    editBtn.classList.remove('hidden');   // Força o botão aparecer
-    console.log("✅ Modo edição ATIVADO");
-    renderDireitos();
-  } else {
-    isEditing = false;
-    editBtn.classList.add('hidden');
-    userEmailEl.classList.add('hidden');
-    logoutBtn.classList.add('hidden');
-  }
-});
-
-window.mostrarModalLogin = () => modalLogin.classList.remove('hidden');
-window.fecharModalLogin = () => modalLogin.classList.add('hidden');
-
-window.loginComGoogle = async () => {
-  console.log("Tentando login com Google...");
-  const provider = new GoogleAuthProvider();
-  try {
-    await signInWithPopup(auth, provider);
-    fecharModalLogin();
-    console.log("Login com Google realizado!");
-  } catch (error) {
-    console.error("Erro no login:", error);
-    alert("Erro no login com Google:\n" + error.message + "\n\nVerifique se o domínio do Vercel está adicionado no Firebase.");
-  }
-};
-
-window.logout = () => signOut(auth);
-
-// ==================== EDIÇÃO (salva automaticamente ao digitar) ====================
-function renderDireitos() {
-  direitosContainer.innerHTML = '';
-
-  direitos.forEach((item, index) => {
-    const div = document.createElement('div');
-    div.className = `topic-card bg-white border border-gray-200 rounded-3xl p-10 shadow-sm`;
-    div.innerHTML = `
-      <div class="flex justify-between items-center mb-6">
-        <input type="text" value="${item.titulo || ''}" 
-               class="text-3xl font-bold bg-transparent border-b-2 border-transparent focus:border-blue-500 outline-none w-full ${isEditing ? '' : 'pointer-events-none'}"
-               onchange="window.atualizarTitulo(${index}, this.value)">
-        
-        ${isEditing ? `<button onclick="window.removerTopico(${index})" class="text-red-600"><i class="fa-solid fa-trash"></i></button>` : ''}
+  <!-- TOPBAR COMPLETA - IGUAL AO SITE OFICIAL -->
+  <header class="top-bar bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-center justify-between px-6 py-2 text-sm border-b">
+        <a href="#" onclick="location.reload()" class="flex items-center gap-2 hover:text-blue-600">
+          <i class="fa-solid fa-house text-xl"></i>
+          <span class="font-medium">Bem-vindo às Nações Unidas</span>
+        </a>
+        <span class="font-medium">Português</span>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <div class="lg:col-span-7">
-          <textarea rows="7" class="w-full border border-gray-300 rounded-2xl p-6 text-base ${isEditing ? '' : 'pointer-events-none bg-gray-50'}"
-                    onchange="window.atualizarTexto(${index}, this.value)">${item.texto || ''}</textarea>
+      <div class="flex items-center justify-between px-6 py-5">
+        <div class="flex items-center gap-3">
+          <img src="https://brasil.un.org/sites/default/files/2020-09/UN-Brasil-logo.png" alt="Nações Unidas Brasil" class="h-14">
+          <div>
+            <span class="text-3xl font-bold un-blue">Nações Unidas</span>
+            <span class="block text-sm -mt-1">Brasil</span>
+          </div>
         </div>
-        <div class="lg:col-span-5">
-          <input type="text" value="${item.imagem || ''}" placeholder="Link da imagem"
-                 class="w-full border border-gray-300 rounded-2xl px-5 py-4 text-sm ${isEditing ? '' : 'pointer-events-none bg-gray-50'}"
-                 onchange="window.atualizarImagem(${index}, this.value)">
-          ${item.imagem ? `<img src="${item.imagem}" class="mt-6 w-full h-64 object-cover rounded-2xl">` : '<p class="text-gray-400 mt-6">Sem imagem</p>'}
+
+        <nav class="hidden md:flex items-center gap-8 text-base font-medium">
+          <a href="#" class="hover:text-blue-600">Sobre</a>
+          <a href="#" class="hover:text-blue-600">Objetivos de Desenvolvimento Sustentável</a>
+          <a href="#" class="hover:text-blue-600">Faça a sua parte</a>
+          <a href="#" class="hover:text-blue-600">Histórias</a>
+          <a href="#" class="hover:text-blue-600">Recursos</a>
+          <a href="#" class="hover:text-blue-600">Centro de Imprensa</a>
+        </nav>
+
+        <div class="relative w-96">
+          <input id="searchInput" type="text" placeholder="Encontre dados, recursos, notícias e mais..." 
+                 class="w-full bg-gray-100 border border-gray-300 rounded-full py-3.5 px-6 pr-12 focus:outline-none focus:border-blue-500">
+          <button onclick="realizarBusca()" class="absolute right-5 top-1/2 -translate-y-1/2 text-blue-600">
+            <i class="fa-solid fa-magnifying-glass text-2xl"></i>
+          </button>
         </div>
       </div>
-    `;
-    direitosContainer.appendChild(div);
-  });
+    </div>
+  </header>
 
-  if (isEditing) {
-    const btn = document.createElement('button');
-    btn.className = "mt-12 mx-auto block bg-green-600 text-white px-8 py-4 rounded-2xl font-medium";
-    btn.textContent = "➕ Adicionar Novo Tópico";
-    btn.onclick = window.adicionarTopico;
-    direitosContainer.appendChild(btn);
-  }
-}
+  <!-- CONTEÚDO PRINCIPAL - SÓ TÍTULO + UMA FRASE (você edita depois) -->
+  <main class="max-w-4xl mx-auto px-6 py-20 text-center">
+    <h1 id="tituloPrincipal" class="text-5xl font-bold text-gray-900 mb-8">
+      Declaração dos Direitos dos Adolescentes
+    </h1>
+    <p id="frasePrincipal" class="text-2xl text-gray-600 leading-relaxed">
+      Tudo que eu aprendo é para salvar a minha vida, da minha família e da minha comunidade.
+    </p>
+  </main>
 
-window.atualizarTitulo = (i, v) => { if (direitos[i]) { direitos[i].titulo = v; salvarNoFirebase(); } };
-window.atualizarTexto  = (i, v) => { if (direitos[i]) { direitos[i].texto = v; salvarNoFirebase(); } };
-window.atualizarImagem = (i, v) => { if (direitos[i]) { direitos[i].imagem = v; salvarNoFirebase(); renderDireitos(); } };
+  <!-- BOLINHA DO CHAT -->
+  <div onclick="toggleChat()" id="chatBubble" 
+       class="chat-bubble fixed bottom-8 left-8 w-20 h-20 bg-[#009edb] rounded-full flex items-center justify-center shadow-2xl z-[9999] border-4 border-white cursor-pointer">
+    <img src="https://brasil.un.org/sites/default/files/2020-09/UN-Brasil-logo.png" class="w-12 h-12 object-contain filter invert">
+  </div>
 
-window.adicionarTopico = () => {
-  direitos.push({ titulo: "Novo Tópico", texto: "Escreva aqui...", imagem: "" });
-  renderDireitos();
-  salvarNoFirebase();
-};
+  <!-- JANELA DO CHAT -->
+  <div id="chatWindow" class="hidden fixed bottom-28 left-8 w-96 bg-white rounded-3xl shadow-2xl z-[10000] overflow-hidden">
+    <div class="bg-[#009edb] text-white p-4 flex justify-between">
+      <span class="font-semibold">Chat em Tempo Real</span>
+      <i onclick="toggleChat()" class="fa-solid fa-xmark cursor-pointer"></i>
+    </div>
+    <div id="chatMessages" class="h-80 p-4 overflow-y-auto bg-gray-50"></div>
+    <div class="p-4 border-t flex gap-2">
+      <input id="chatInput" type="text" placeholder="Digite sua mensagem..." class="flex-1 border rounded-2xl px-5 py-3">
+      <button onclick="enviarMensagem()" class="bg-[#009edb] text-white px-8 rounded-2xl font-medium">Enviar</button>
+    </div>
+  </div>
 
-window.removerTopico = (i) => {
-  if (confirm("Remover tópico?")) {
-    direitos.splice(i, 1);
-    renderDireitos();
-    salvarNoFirebase();
-  }
-};
+  <script>
+    // ==================== FIREBASE CONFIG (COLOQUE SEUS DADOS AQUI) ====================
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY_AQUI",
+      authDomain: "SEU-PROJETO.firebaseapp.com",
+      databaseURL: "https://SEU-PROJETO-default-rtdb.firebaseio.com",
+      projectId: "SEU-PROJETO",
+      storageBucket: "SEU-PROJETO.appspot.com",
+      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+      appId: "SEU_APP_ID"
+    };
 
-function salvarNoFirebase() {
-  set(ref(window.db, 'direitosAdolescentes'), direitos);
-}
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-function carregarDireitos() {
-  onValue(ref(window.db, 'direitosAdolescentes'), (snap) => {
-    direitos = snap.val() || [];
-    renderDireitos();
-  });
-}
+    // ==================== CHAT EM TEMPO REAL (sem login) ====================
+    window.toggleChat = () => {
+      document.getElementById('chatWindow').classList.toggle('hidden');
+      document.getElementById('chatBubble').classList.toggle('rotated');
+    };
 
-// ==================== CHAT ====================
-window.toggleChat = () => {
-  chatWindow.classList.toggle('hidden');
-  chatBubble.classList.toggle('rotated');
-};
+    window.enviarMensagem = () => {
+      const input = document.getElementById('chatInput');
+      const texto = input.value.trim();
+      if (!texto) return;
 
-window.enviarMensagem = () => {
-  const texto = chatInput.value.trim();
-  if (!texto) return;
+      db.ref('chatMensagens').push({
+        texto: texto,
+        nome: "Aluno",
+        timestamp: Date.now()
+      });
 
-  const user = auth.currentUser;
-  if (!user) {
-    alert("Faça login primeiro para enviar mensagem.");
-    return;
-  }
+      input.value = '';
+    };
 
-  push(ref(window.db, 'chatMensagens'), {
-    texto: texto,
-    nome: user.email.split('@')[0],
-    email: user.email,
-    timestamp: Date.now()
-  });
+    // Carregar mensagens em tempo real
+    db.ref('chatMensagens').on('value', (snapshot) => {
+      const msgs = snapshot.val() || {};
+      const container = document.getElementById('chatMessages');
+      container.innerHTML = '';
+      Object.values(msgs).forEach(msg => {
+        const div = document.createElement('div');
+        div.className = "flex justify-start mb-3";
+        div.innerHTML = `<div class="bg-gray-200 px-5 py-3 rounded-3xl">${msg.nome}: ${msg.texto}</div>`;
+        container.appendChild(div);
+      });
+      container.scrollTop = container.scrollHeight;
+    });
 
-  chatInput.value = '';
-};
+    window.realizarBusca = () => {
+      const termo = document.getElementById('searchInput').value.trim();
+      if (termo) alert(`🔎 Buscando: "${termo}"`);
+    };
 
-// Inicialização
-window.onload = () => {
-  carregarDireitos();
-  console.log("%c🚀 Versão de emergência carregada - Teste o login agora", "color:#009edb; font-size:18px");
-};
+    console.log("%c✅ PARTE 3 CONCLUÍDA - Script do Chat funcionando", "color:#009edb; font-size:18px");
+  </script>
+
+  <!-- ==================== PARTE 4 - FUNÇÕES EXTRAS E INICIALIZAÇÃO ==================== -->
+  <script>
+    // Função para editar título e frase depois (você pode mudar aqui)
+    function atualizarTituloENovaFrase() {
+      // Mude o texto aqui depois:
+      document.getElementById('tituloPrincipal').textContent = "Declaração dos Direitos dos Adolescentes";
+      document.getElementById('frasePrincipal').textContent = "Tudo que eu aprendo é para salvar a minha vida, da minha família e da minha comunidade.";
+    }
+
+    // Chama a função ao carregar a página
+    window.onload = () => {
+      atualizarTituloENovaFrase();
+      console.log("%c✅ SITE COMPLETO CARREGADO - Topbar + Chat funcionando", "color:#009edb; font-size:18px");
+    };
+  </script>
+  <!-- ==================== CHAT EM TEMPO REAL (funcionando) ==================== -->
+  <script>
+    // Configuração do Firebase (coloque seus dados aqui se ainda não colocou)
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY_AQUI",
+      authDomain: "SEU-PROJETO.firebaseapp.com",
+      databaseURL: "https://SEU-PROJETO-default-rtdb.firebaseio.com",
+      projectId: "SEU-PROJETO",
+      storageBucket: "SEU-PROJETO.appspot.com",
+      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+      appId: "SEU_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Abrir/Fechar Chat
+    window.toggleChat = () => {
+      const chatWindow = document.getElementById('chatWindow');
+      const chatBubble = document.getElementById('chatBubble');
+      chatWindow.classList.toggle('hidden');
+      chatBubble.classList.toggle('rotated');
+    };
+
+    // Enviar mensagem
+    window.enviarMensagem = () => {
+      const input = document.getElementById('chatInput');
+      const texto = input.value.trim();
+      
+      if (!texto) return;
+
+      db.ref('chatMensagens').push({
+        texto: texto,
+        nome: "Aluno",
+        timestamp: Date.now()
+      });
+
+      input.value = '';
+    };
+
+    // Carregar mensagens em tempo real
+    db.ref('chatMensagens').on('value', (snapshot) => {
+      const mensagens = snapshot.val() || {};
+      const container = document.getElementById('chatMessages');
+      
+      container.innerHTML = '';
+
+      Object.values(mensagens).forEach(msg => {
+        const div = document.createElement('div');
+        div.className = "mb-3";
+        div.innerHTML = `
+          <div class="inline-block bg-gray-200 px-5 py-3 rounded-3xl max-w-[80%]">
+            <strong>${msg.nome}:</strong> ${msg.texto}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      container.scrollTop = container.scrollHeight;
+    });
+
+    console.log("%c✅ Chat em tempo real carregado e funcionando", "color:#009edb; font-size:16px");
+  </script>
+
+  <!-- ==================== CHAT COM ANIMAÇÃO DE 180° ==================== -->
+  <script>
+    // Configuração Firebase (coloque seus dados aqui)
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY_AQUI",
+      authDomain: "SEU-PROJETO.firebaseapp.com",
+      databaseURL: "https://SEU-PROJETO-default-rtdb.firebaseio.com",
+      projectId: "SEU-PROJETO",
+      storageBucket: "SEU-PROJETO.appspot.com",
+      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+      appId: "SEU_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // ==================== ANIMAÇÃO DO CHAT (180°) ====================
+    let chatAberto = false;
+
+    window.toggleChat = () => {
+      const bubble = document.getElementById('chatBubble');
+      const windowEl = document.getElementById('chatWindow');
+
+      chatAberto = !chatAberto;
+
+      if (chatAberto) {
+        bubble.classList.add('rotated');   // gira 180°
+        windowEl.classList.remove('hidden');
+      } else {
+        bubble.classList.remove('rotated'); // volta ao normal
+        windowEl.classList.add('hidden');
+      }
+    };
+
+    // ==================== ENVIAR MENSAGEM ====================
+    window.enviarMensagem = () => {
+      const input = document.getElementById('chatInput');
+      const texto = input.value.trim();
+
+      if (!texto) return;
+
+      db.ref('chatMensagens').push({
+        texto: texto,
+        nome: "Aluno",
+        timestamp: Date.now()
+      });
+
+      input.value = '';
+    };
+
+    // ==================== CARREGAR MENSAGENS EM TEMPO REAL ====================
+    db.ref('chatMensagens').on('value', (snapshot) => {
+      const mensagens = snapshot.val() || {};
+      const container = document.getElementById('chatMessages');
+      
+      container.innerHTML = '';
+
+      Object.values(mensagens).forEach(msg => {
+        const div = document.createElement('div');
+        div.className = "mb-4 flex justify-start";
+        div.innerHTML = `
+          <div class="bg-gray-200 px-5 py-3 rounded-3xl max-w-[85%]">
+            <small class="text-xs text-gray-500 block">${msg.nome}</small>
+            ${msg.texto}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      container.scrollTop = container.scrollHeight;
+    });
+
+    console.log("%c✅ Chat com animação de 180° carregado e funcionando", "color:#009edb; font-size:16px");
+  </script>
+
+</body>
+</html>
