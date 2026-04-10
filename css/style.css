@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.un-blue {
+  color: #009edb;
+}
+
+.top-bar {
+  border-bottom: 4px solid #009edb;
+}
+
+.chat-bubble {
+  transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.chat-bubble.rotated {
+  transform: rotate(180deg);
+}
+
+.topic-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.topic-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}
