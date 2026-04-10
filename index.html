@@ -6,66 +6,88 @@
   <title>Declaração dos Direitos dos Adolescentes | Nações Unidas Brasil</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+    body { font-family: 'Inter', system-ui, sans-serif; }
     .un-blue { color: #009edb; }
     .top-bar { border-bottom: 4px solid #009edb; }
-    .chat-bubble { transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+    .chat-bubble { transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
     .chat-bubble.rotated { transform: rotate(180deg); }
   </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-white">
 
-  <!-- TOPBAR -->
+  <!-- TOPBAR COMPLETA - IGUAL AO SITE OFICIAL -->
   <header class="top-bar bg-white shadow-sm sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <img src="https://brasil.un.org/sites/default/files/2020-09/UN-Brasil-logo.png" class="h-14">
-        <div>
-          <span class="text-3xl font-bold un-blue">Nações Unidas</span>
-          <span class="block text-sm -mt-1">Brasil</span>
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-center justify-between px-6 py-2 text-sm border-b">
+        <a href="#" onclick="location.reload()" class="flex items-center gap-2 hover:text-blue-600">
+          <i class="fa-solid fa-house text-xl"></i>
+          <span class="font-medium">Bem-vindo às Nações Unidas</span>
+        </a>
+        <span class="font-medium">Português</span>
+      </div>
+
+      <div class="flex items-center justify-between px-6 py-5">
+        <div class="flex items-center gap-3">
+          <img src="https://brasil.un.org/sites/default/files/2020-09/UN-Brasil-logo.png" alt="Nações Unidas Brasil" class="h-14">
+          <div>
+            <span class="text-3xl font-bold un-blue">Nações Unidas</span>
+            <span class="block text-sm -mt-1">Brasil</span>
+          </div>
+        </div>
+
+        <nav class="hidden md:flex items-center gap-8 text-base font-medium">
+          <a href="#" class="hover:text-blue-600">Sobre</a>
+          <a href="#" class="hover:text-blue-600">Objetivos de Desenvolvimento Sustentável</a>
+          <a href="#" class="hover:text-blue-600">Faça a sua parte</a>
+          <a href="#" class="hover:text-blue-600">Histórias</a>
+          <a href="#" class="hover:text-blue-600">Recursos</a>
+          <a href="#" class="hover:text-blue-600">Centro de Imprensa</a>
+        </nav>
+
+        <div class="relative w-96">
+          <input id="searchInput" type="text" placeholder="Encontre dados, recursos, notícias e mais..." 
+                 class="w-full bg-gray-100 border border-gray-300 rounded-full py-3.5 px-6 pr-12 focus:outline-none focus:border-blue-500">
+          <button onclick="realizarBusca()" class="absolute right-5 top-1/2 -translate-y-1/2 text-blue-600">
+            <i class="fa-solid fa-magnifying-glass text-2xl"></i>
+          </button>
         </div>
       </div>
-      <h1 class="text-4xl font-bold">Declaração dos Direitos dos Adolescentes</h1>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-6 py-10">
-    <div id="conteudo" class="space-y-12"></div>
-
-    <!-- Botão Adicionar Tópico -->
-    <button onclick="adicionarTopico()" 
-            class="mt-12 mx-auto block bg-green-600 hover:bg-green-700 text-white px-10 py-5 rounded-3xl text-xl font-semibold flex items-center gap-3">
-      <i class="fa-solid fa-plus"></i> Adicionar Novo Tópico
-    </button>
+  <!-- CONTEÚDO PRINCIPAL - SÓ TÍTULO + UMA FRASE (você edita depois) -->
+  <main class="max-w-4xl mx-auto px-6 py-20 text-center">
+    <h1 id="tituloPrincipal" class="text-5xl font-bold text-gray-900 mb-8">
+      Declaração dos Direitos dos Adolescentes
+    </h1>
+    <p id="frasePrincipal" class="text-2xl text-gray-600 leading-relaxed">
+      Tudo que eu aprendo é para salvar a minha vida, da minha família e da minha comunidade.
+    </p>
   </main>
 
   <!-- BOLINHA DO CHAT -->
   <div onclick="toggleChat()" id="chatBubble" 
        class="chat-bubble fixed bottom-8 left-8 w-20 h-20 bg-[#009edb] rounded-full flex items-center justify-center shadow-2xl z-[9999] border-4 border-white cursor-pointer">
-    <img src="https://brasil.un.org/sites/default/files/2020-09/UN-Brasil-logo.png" class="w-12 h-12 filter invert">
+    <img src="https://brasil.un.org/sites/default/files/2020-09/UN-Brasil-logo.png" class="w-12 h-12 object-contain filter invert">
   </div>
 
   <!-- JANELA DO CHAT -->
   <div id="chatWindow" class="hidden fixed bottom-28 left-8 w-96 bg-white rounded-3xl shadow-2xl z-[10000] overflow-hidden">
-    <div class="bg-[#009edb] text-white p-4 flex justify-between items-center">
+    <div class="bg-[#009edb] text-white p-4 flex justify-between">
       <span class="font-semibold">Chat em Tempo Real</span>
       <i onclick="toggleChat()" class="fa-solid fa-xmark cursor-pointer"></i>
     </div>
-    <div id="chatMessages" class="h-80 p-4 overflow-y-auto bg-gray-50 space-y-3"></div>
+    <div id="chatMessages" class="h-80 p-4 overflow-y-auto bg-gray-50"></div>
     <div class="p-4 border-t flex gap-2">
-      <input id="chatInput" type="text" placeholder="Digite sua mensagem..." 
-             class="flex-1 border border-gray-300 rounded-2xl px-5 py-3 focus:outline-none">
-      <button onclick="enviarMensagem()" 
-              class="bg-[#009edb] text-white px-8 rounded-2xl font-medium">Enviar</button>
+      <input id="chatInput" type="text" placeholder="Digite sua mensagem..." class="flex-1 border rounded-2xl px-5 py-3">
+      <button onclick="enviarMensagem()" class="bg-[#009edb] text-white px-8 rounded-2xl font-medium">Enviar</button>
     </div>
   </div>
 
   <script>
-    // ==================== SEUS DADOS DO FIREBASE ====================
+    // ==================== FIREBASE CONFIG (COLOQUE SEUS DADOS AQUI) ====================
     const firebaseConfig = {
       apiKey: "SUA_API_KEY_AQUI",
       authDomain: "SEU-PROJETO.firebaseapp.com",
@@ -79,61 +101,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    let direitos = [];
-
-    // ==================== CARREGAR E MOSTRAR TÓPICOS ====================
-    function carregarDireitos() {
-      db.ref('direitosAdolescentes').on('value', (snapshot) => {
-        direitos = snapshot.val() || [];
-        renderizar();
-      });
-    }
-
-    function renderizar() {
-      const container = document.getElementById('conteudo');
-      container.innerHTML = '';
-
-      direitos.forEach((item, index) => {
-        const div = document.createElement('div');
-        div.className = "bg-white border border-gray-200 rounded-3xl p-10 shadow-sm";
-        div.innerHTML = `
-          <h2 class="text-3xl font-bold mb-4">${item.titulo}</h2>
-          <textarea class="w-full h-40 border border-gray-300 rounded-2xl p-6 text-base resize-y" 
-                    onchange="atualizarTexto(${index}, this.value)">${item.texto || 'Coloque a descrição aqui...'}</textarea>
-          
-          <div class="mt-8">
-            <p class="text-sm text-gray-500 mb-2">Link da Foto (cole aqui):</p>
-            <input type="text" value="${item.imagem || ''}" placeholder="https://exemplo.com/foto.jpg" 
-                   class="w-full border border-gray-300 rounded-2xl p-4 text-sm" 
-                   onchange="atualizarImagem(${index}, this.value)">
-            ${item.imagem ? `<img src="${item.imagem}" class="mt-6 w-full h-64 object-cover rounded-2xl shadow">` : ''}
-          </div>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    window.atualizarTexto = (index, valor) => {
-      direitos[index].texto = valor;
-      db.ref('direitosAdolescentes').set(direitos);
-    };
-
-    window.atualizarImagem = (index, link) => {
-      direitos[index].imagem = link;
-      db.ref('direitosAdolescentes').set(direitos);
-      renderizar();
-    };
-
-    window.adicionarTopico = () => {
-      direitos.push({
-        titulo: "Novo Direito do Adolescente",
-        texto: "Coloque a descrição aqui (você pode editar depois)...",
-        imagem: ""
-      });
-      db.ref('direitosAdolescentes').set(direitos);
-    };
-
-    // ==================== CHAT SEM LOGIN ====================
+    // ==================== CHAT EM TEMPO REAL (sem login) ====================
     window.toggleChat = () => {
       document.getElementById('chatWindow').classList.toggle('hidden');
       document.getElementById('chatBubble').classList.toggle('rotated');
@@ -153,25 +121,27 @@
       input.value = '';
     };
 
-    // Carregar chat em tempo real
+    // Carregar mensagens em tempo real
     db.ref('chatMensagens').on('value', (snapshot) => {
       const msgs = snapshot.val() || {};
-      const div = document.getElementById('chatMessages');
-      div.innerHTML = '';
-      Object.values(msgs).forEach(m => {
-        const el = document.createElement('div');
-        el.className = "flex justify-start";
-        el.innerHTML = `<div class="bg-gray-200 px-5 py-3 rounded-3xl max-w-[80%]">${m.nome}: ${m.texto}</div>`;
-        div.appendChild(el);
+      const container = document.getElementById('chatMessages');
+      container.innerHTML = '';
+      Object.values(msgs).forEach(msg => {
+        const div = document.createElement('div');
+        div.className = "flex justify-start mb-3";
+        div.innerHTML = `<div class="bg-gray-200 px-5 py-3 rounded-3xl">${msg.nome}: ${msg.texto}</div>`;
+        container.appendChild(div);
       });
-      div.scrollTop = div.scrollHeight;
+      container.scrollTop = container.scrollHeight;
     });
 
-    // Inicializar
-    window.onload = () => {
-      carregarDireitos();
-      console.log("%c✅ Site pronto - Sem login, chat funcionando, edição direta", "color:#009edb; font-size:16px");
+    window.realizarBusca = () => {
+      const termo = document.getElementById('searchInput').value.trim();
+      if (termo) alert(`🔎 Buscando: "${termo}"`);
     };
+
+    console.log("%c✅ PARTE 3 CONCLUÍDA - Script do Chat funcionando", "color:#009edb; font-size:18px");
   </script>
+
 </body>
 </html>
