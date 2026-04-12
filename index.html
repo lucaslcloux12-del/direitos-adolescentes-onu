@@ -48,12 +48,12 @@
         </div>
 
         <nav class="hidden md:flex items-center gap-8 text-base font-medium">
-          <a href="#" class="hover:text-blue-600">Sobre</a>
-          <a href="#" class="hover:text-blue-600">Objetivos de Desenvolvimento Sustentável</a>
-          <a href="#" class="hover:text-blue-600">Faça a sua parte</a>
-          <a href="#" class="hover:text-blue-600">Histórias</a>
-          <a href="#" class="hover:text-blue-600">Recursos</a>
-          <a href="#" class="hover:text-blue-600">Centro de Imprensa</a>
+          <a onclick="mostrarSecao('sobre')" class="hover:text-blue-600 cursor-pointer">Sobre</a>
+          <a onclick="mostrarSecao('ods')" class="hover:text-blue-600 cursor-pointer">Objetivos de Desenvolvimento Sustentável</a>
+          <a onclick="mostrarSecao('facaaparte')" class="hover:text-blue-600 cursor-pointer">Faça a sua parte</a>
+          <a onclick="mostrarSecao('historias')" class="hover:text-blue-600 cursor-pointer">Histórias</a>
+          <a onclick="mostrarSecao('recursos')" class="hover:text-blue-600 cursor-pointer">Recursos</a>
+          <a onclick="mostrarSecao('imprensa')" class="hover:text-blue-600 cursor-pointer">Centro de Imprensa</a>
         </nav>
 
         <div class="relative w-96">
@@ -304,7 +304,8 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
       }
     };
 
-    // ==================== CHAT (abre sem login, envia só após login) ====================
+  <script>
+    // ==================== CHAT COM BOTÃO DE EXCLUIR (só para lucaslcloux12@gmail.com) ====================
     let chatAberto = false;
 
     window.toggleChat = () => {
@@ -325,7 +326,7 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
     window.enviarMensagem = () => {
       const user = auth.currentUser;
       if (!user) {
-        alert("Você precisa fazer login com Google para enviar mensagens.");
+        alert("Você precisa fazer login para enviar mensagens.");
         mostrarModalLogin();
         return;
       }
@@ -337,11 +338,52 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
       db.ref('chatMensagens').push({
         texto: texto,
         nome: user.displayName || "Aluno",
+        email: user.email,
         timestamp: Date.now()
       });
 
       input.value = '';
     };
+
+    // Carregar mensagens com botão de excluir
+    db.ref('chatMensagens').on('value', (snapshot) => {
+      const mensagens = snapshot.val() || {};
+      const container = document.getElementById('chatMessages');
+      container.innerHTML = '';
+
+      Object.keys(mensagens).forEach(key => {
+        const msg = mensagens[key];
+        const isOwner = msg.email === "lucaslcloux12@gmail.com";
+
+        const div = document.createElement('div');
+        div.className = "mb-4 flex justify-start group";
+        div.innerHTML = `
+          <div class="bg-gray-200 px-5 py-3 rounded-3xl max-w-[85%] relative">
+            <small class="text-xs text-gray-500">${msg.nome}</small>
+            <p class="text-base">${msg.texto}</p>
+            
+            ${isOwner ? `
+            <button onclick="excluirMensagem('${key}')" 
+                    class="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+              🗑
+            </button>` : ''}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      container.scrollTop = container.scrollHeight;
+    });
+
+    // Função para excluir mensagem
+    window.excluirMensagem = (key) => {
+      if (confirm("Tem certeza que deseja excluir esta mensagem?")) {
+        db.ref('chatMensagens/' + key).remove();
+      }
+    };
+
+    console.log("%c✅ Botão de excluir mensagens adicionado (só para lucaslcloux12@gmail.com)", "color:#009edb; font-size:16px");
+  </script>
 
     // Carregar mensagens em tempo real
     db.ref('chatMensagens').on('value', (snapshot) => {
@@ -364,6 +406,41 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
     });
 
     console.log("%c✅ Login + Chat corrigido e funcionando", "color:#009edb; font-size:18px");
+  </script>
+
+	  <script>
+    // Função para mudar o conteúdo da página
+    function mostrarSecao(secao) {
+      // Esconde tudo
+      document.querySelectorAll('.secao-conteudo').forEach(el => el.classList.add('hidden'));
+
+      // Mostra a seção escolhida
+      const secaoEl = document.getElementById('secao-' + secao);
+      if (secaoEl) secaoEl.classList.remove('hidden');
+    }
+
+    // Função da busca
+    window.realizarBusca = () => {
+      const termo = document.getElementById('searchInput').value.trim().toLowerCase();
+      if (!termo) return;
+
+      const container = document.getElementById('conteudoPrincipal');
+      container.innerHTML = `
+        <h2 class="text-3xl font-bold mb-8">Resultados para: "${termo}"</h2>
+        <div class="space-y-8">
+          <div class="bg-white border border-gray-200 rounded-3xl p-8">
+            <h3 class="text-2xl font-semibold">Direito à Educação</h3>
+            <p class="mt-4 text-lg">Todo adolescente tem direito a uma educação de qualidade, inclusiva e gratuita.</p>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-3xl p-8">
+            <h3 class="text-2xl font-semibold">Proteção contra Violência</h3>
+            <p class="mt-4 text-lg">Proteção contra todas as formas de violência física, psicológica e online.</p>
+          </div>
+        </div>
+      `;
+    };
+
+    console.log("%c✅ Botões da topbar e busca adicionados", "color:#009edb; font-size:18px");
   </script>
 </body>
 </html>
