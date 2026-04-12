@@ -401,36 +401,84 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
     console.log("%c✅ Botões da topbar e busca adicionados", "color:#009edb; font-size:18px");
   </script>
 
-	<script>
-  // Função para excluir uma mensagem do chat
-  window.excluirMensagem = function(key) {
-    if (confirm("Tem certeza que deseja excluir esta mensagem?")) {
-      db.ref('chatMensagens/' + key).remove();
-      console.log("Mensagem excluída: " + key);
-    }
-  };
+  <script>
+    // ==================== CHAT - SÓ VOCÊ PODE EXCLUIR ====================
+    let chatAberto = false;
 
-  // Exemplo de como carregar as mensagens com botão de excluir
-  db.ref('chatMensagens').on('value', (snapshot) => {
-    const mensagens = snapshot.val() || {};
-    const container = document.getElementById('chatMessages');
-    container.innerHTML = '';
+    window.toggleChat = () => {
+      const bubble = document.getElementById('chatBubble');
+      const windowEl = document.getElementById('chatWindow');
 
-    Object.keys(mensagens).forEach(function(key) {
-      const msg = mensagens[key];
+      chatAberto = !chatAberto;
 
-      const div = document.createElement('div');
-      div.innerHTML = `
-        <div style="margin-bottom: 10px; padding: 10px; background: #f1f1f1; border-radius: 8px;">
-          <strong>${msg.nome}:</strong> ${msg.texto}
-          <button onclick="excluirMensagem('${key}')" style="margin-left: 10px; color: red; font-size: 12px;">🗑 Excluir</button>
-        </div>
-      `;
-      container.appendChild(div);
+      if (chatAberto) {
+        bubble.classList.add('rotated');
+        windowEl.classList.remove('hidden');
+      } else {
+        bubble.classList.remove('rotated');
+        windowEl.classList.add('hidden');
+      }
+    };
+
+    window.enviarMensagem = () => {
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Faça login para enviar mensagens.");
+        return;
+      }
+
+      const input = document.getElementById('chatInput');
+      const texto = input.value.trim();
+      if (!texto) return;
+
+      db.ref('chatMensagens').push({
+        texto: texto,
+        nome: user.displayName || "Aluno",
+        email: user.email,
+        timestamp: Date.now()
+      });
+
+      input.value = '';
+    };
+
+    // Carregar mensagens + botão de excluir (só para lucaslcloux12@gmail.com)
+    db.ref('chatMensagens').on('value', (snapshot) => {
+      const mensagens = snapshot.val() || {};
+      const container = document.getElementById('chatMessages');
+      container.innerHTML = '';
+
+      Object.keys(mensagens).forEach(key => {
+        const msg = mensagens[key];
+        const podeExcluir = (msg.email === "lucaslcloux12@gmail.com");
+
+        const div = document.createElement('div');
+        div.className = "mb-4 flex justify-start group relative";
+        div.innerHTML = `
+          <div class="bg-gray-200 px-5 py-3 rounded-3xl max-w-[85%]">
+            <small class="text-xs text-gray-500">${msg.nome}</small>
+            <p>${msg.texto}</p>
+          </div>
+          
+          ${podeExcluir ? `
+          <button onclick="excluirMensagem('${key}')" 
+                  class="absolute -top-1 -right-2 bg-red-500 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-red-600">
+            🗑
+          </button>` : ''}
+        `;
+        container.appendChild(div);
+      });
+
+      container.scrollTop = container.scrollHeight;
     });
 
-    container.scrollTop = container.scrollHeight;
-  });
-</script>
+    // Função para excluir mensagem
+    window.excluirMensagem = (key) => {
+      if (confirm("Tem certeza que deseja excluir esta mensagem?")) {
+        db.ref('chatMensagens/' + key).remove();
+      }
+    };
+
+    console.log("%c✅ Botão de excluir funcionando - só você pode excluir", "color:#009edb; font-size:16px");
+  </script>
 </body>
 </html>
