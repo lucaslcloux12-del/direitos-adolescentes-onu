@@ -476,9 +476,8 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
     console.log("%c✅ Chat com animação de 180° carregado e funcionando", "color:#009edb; font-size:16px");
   </script>
 
-  <!-- ==================== LOGIN + CHAT FUNCIONAL ==================== -->
   <script>
-    // ==================== FUNÇÕES DO LOGIN ====================
+    // ==================== LOGIN COM GOOGLE ====================
     window.mostrarModalLogin = () => {
       document.getElementById('modalLogin').classList.remove('hidden');
     };
@@ -490,26 +489,18 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
     window.loginComGoogle = async () => {
       const provider = new firebase.auth.GoogleAuthProvider();
       try {
-        await firebase.auth().signInWithPopup(provider);
+        const result = await firebase.auth().signInWithPopup(provider);
         fecharModalLogin();
-        alert("✅ Login realizado com sucesso!\n\nAgora você pode usar o chat.");
+        alert("✅ Login realizado!\n\nAgora você pode enviar mensagens no chat.");
       } catch (error) {
         alert("Erro ao fazer login:\n" + error.message);
       }
     };
 
-    // ==================== ANIMAÇÃO 180° + CHAT ====================
+    // ==================== CHAT - ABRE SEM LOGIN, MAS SÓ ENVIA DEPOIS DO LOGIN ====================
     let chatAberto = false;
 
     window.toggleChat = () => {
-      const user = firebase.auth().currentUser;
-      
-      if (!user) {
-        alert("Você precisa fazer login com Google para usar o chat.");
-        mostrarModalLogin();
-        return;
-      }
-
       const bubble = document.getElementById('chatBubble');
       const windowEl = document.getElementById('chatWindow');
 
@@ -526,8 +517,10 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
 
     window.enviarMensagem = () => {
       const user = firebase.auth().currentUser;
+
       if (!user) {
-        alert("Faça login para enviar mensagens.");
+        alert("Você precisa fazer login com Google para enviar mensagens.");
+        mostrarModalLogin();
         return;
       }
 
@@ -537,7 +530,7 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
 
       db.ref('chatMensagens').push({
         texto: texto,
-        nome: user.displayName || "Usuário",
+        nome: user.displayName || user.email.split('@')[0],
         timestamp: Date.now()
       });
 
@@ -564,7 +557,7 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
       container.scrollTop = container.scrollHeight;
     });
 
-    console.log("%c✅ Login + Chat com animação 180° funcionando", "color:#009edb; font-size:16px");
+    console.log("%c✅ Chat abre sem login, mas só envia após login", "color:#009edb; font-size:16px");
   </script>
 </body>
 </html>
