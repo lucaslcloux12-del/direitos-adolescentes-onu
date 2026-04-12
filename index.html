@@ -304,8 +304,7 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
       }
     };
 
-  <script>
-    // ==================== CHAT COM BOTÃO DE EXCLUIR (só para lucaslcloux12@gmail.com) ====================
+    // ==================== CHAT (abre sem login, envia só após login) ====================
     let chatAberto = false;
 
     window.toggleChat = () => {
@@ -326,7 +325,7 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
     window.enviarMensagem = () => {
       const user = auth.currentUser;
       if (!user) {
-        alert("Você precisa fazer login para enviar mensagens.");
+        alert("Você precisa fazer login com Google para enviar mensagens.");
         mostrarModalLogin();
         return;
       }
@@ -338,52 +337,11 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
       db.ref('chatMensagens').push({
         texto: texto,
         nome: user.displayName || "Aluno",
-        email: user.email,
         timestamp: Date.now()
       });
 
       input.value = '';
     };
-
-    // Carregar mensagens com botão de excluir
-    db.ref('chatMensagens').on('value', (snapshot) => {
-      const mensagens = snapshot.val() || {};
-      const container = document.getElementById('chatMessages');
-      container.innerHTML = '';
-
-      Object.keys(mensagens).forEach(key => {
-        const msg = mensagens[key];
-        const isOwner = msg.email === "lucaslcloux12@gmail.com";
-
-        const div = document.createElement('div');
-        div.className = "mb-4 flex justify-start group";
-        div.innerHTML = `
-          <div class="bg-gray-200 px-5 py-3 rounded-3xl max-w-[85%] relative">
-            <small class="text-xs text-gray-500">${msg.nome}</small>
-            <p class="text-base">${msg.texto}</p>
-            
-            ${isOwner ? `
-            <button onclick="excluirMensagem('${key}')" 
-                    class="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
-              🗑
-            </button>` : ''}
-          </div>
-        `;
-        container.appendChild(div);
-      });
-
-      container.scrollTop = container.scrollHeight;
-    });
-
-    // Função para excluir mensagem
-    window.excluirMensagem = (key) => {
-      if (confirm("Tem certeza que deseja excluir esta mensagem?")) {
-        db.ref('chatMensagens/' + key).remove();
-      }
-    };
-
-    console.log("%c✅ Botão de excluir mensagens adicionado (só para lucaslcloux12@gmail.com)", "color:#009edb; font-size:16px");
-  </script>
 
     // Carregar mensagens em tempo real
     db.ref('chatMensagens').on('value', (snapshot) => {
