@@ -269,7 +269,7 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
 
   <!-- ==================== SCRIPT FINAL CORRIGIDO ==================== -->
   <script>
-    // ==================== FIREBASE CONFIG ====================
+    // Configuração Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyBG6MQQjwdXVEslNILJsfc5VG_pVLYpOKc",
       authDomain: "brasil-ong.firebaseapp.com",
@@ -284,35 +284,12 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
     const db = firebase.database();
     const auth = firebase.auth();
 
-    // ==================== LOGIN COM GOOGLE ====================
-    window.mostrarModalLogin = () => {
-      document.getElementById('modalLogin').classList.remove('hidden');
-    };
-
-    window.fecharModalLogin = () => {
-      document.getElementById('modalLogin').classList.add('hidden');
-    };
-
-    window.loginComGoogle = async () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      try {
-        await auth.signInWithPopup(provider);
-        fecharModalLogin();
-        alert("✅ Login realizado com sucesso!\n\nAgora você pode enviar mensagens no chat.");
-      } catch (error) {
-        alert("Erro ao fazer login:\n" + error.message);
-      }
-    };
-
-    // ==================== CHAT (abre sem login, envia só após login) ====================
+    // Toggle do chat com animação
     let chatAberto = false;
-
     window.toggleChat = () => {
       const bubble = document.getElementById('chatBubble');
       const windowEl = document.getElementById('chatWindow');
-
       chatAberto = !chatAberto;
-
       if (chatAberto) {
         bubble.classList.add('rotated');
         windowEl.classList.remove('hidden');
@@ -322,34 +299,29 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
       }
     };
 
+    // Enviar mensagem
     window.enviarMensagem = () => {
-      const user = auth.currentUser;
-      if (!user) {
-        alert("Você precisa fazer login com Google para enviar mensagens.");
-        mostrarModalLogin();
-        return;
-      }
-
       const input = document.getElementById('chatInput');
       const texto = input.value.trim();
       if (!texto) return;
 
       db.ref('chatMensagens').push({
         texto: texto,
-        nome: user.displayName || "Aluno",
+        nome: "Aluno",
         timestamp: Date.now()
       });
 
       input.value = '';
     };
 
-    // Carregar mensagens em tempo real
+    // Carregar mensagens
     db.ref('chatMensagens').on('value', (snapshot) => {
       const mensagens = snapshot.val() || {};
       const container = document.getElementById('chatMessages');
       container.innerHTML = '';
 
-      Object.values(mensagens).forEach(msg => {
+      Object.keys(mensagens).forEach(key => {
+        const msg = mensagens[key];
         const div = document.createElement('div');
         div.className = "mb-4 flex justify-start";
         div.innerHTML = `
@@ -363,7 +335,7 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
       container.scrollTop = container.scrollHeight;
     });
 
-    console.log("%c✅ Login + Chat corrigido e funcionando", "color:#009edb; font-size:18px");
+    console.log("%cChat carregado", "color:#009edb");
   </script>
 
 	  <script>
