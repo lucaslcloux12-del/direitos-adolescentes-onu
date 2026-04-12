@@ -402,7 +402,7 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
   </script>
 
   <script>
-    // ==================== CHAT - SÓ VOCÊ PODE EXCLUIR ====================
+    // ==================== CHAT + BOTÃO DE EXCLUIR (SÓ PARA VOCÊ) ====================
     let chatAberto = false;
 
     window.toggleChat = () => {
@@ -441,7 +441,7 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
       input.value = '';
     };
 
-    // Carregar mensagens + botão de excluir (só para lucaslcloux12@gmail.com)
+    // Carregar mensagens com lixeira (só para lucaslcloux12@gmail.com)
     db.ref('chatMensagens').on('value', (snapshot) => {
       const mensagens = snapshot.val() || {};
       const container = document.getElementById('chatMessages');
@@ -461,7 +461,7 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
           
           ${podeExcluir ? `
           <button onclick="excluirMensagem('${key}')" 
-                  class="absolute -top-1 -right-2 bg-red-500 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-red-600">
+                  class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm opacity-0 group-hover:opacity-100">
             🗑
           </button>` : ''}
         `;
@@ -471,14 +471,14 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
       container.scrollTop = container.scrollHeight;
     });
 
-    // Função para excluir mensagem
+    // Função para excluir
     window.excluirMensagem = (key) => {
       if (confirm("Tem certeza que deseja excluir esta mensagem?")) {
         db.ref('chatMensagens/' + key).remove();
       }
     };
 
-    console.log("%c✅ Botão de excluir funcionando - só você pode excluir", "color:#009edb; font-size:16px");
+    console.log("%c✅ Lixeira ativada - só você pode excluir", "color:#009edb; font-size:16px");
   </script>
 </body>
 </html>
