@@ -265,218 +265,22 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
   </div>
 
   <script>
-    // ==================== FIREBASE CONFIG (COLOQUE SEUS DADOS AQUI) ====================
+  <script>
+    // ==================== FIREBASE CONFIG (SEUS DADOS) ====================
     const firebaseConfig = {
-      apiKey: "SUA_API_KEY_AQUI",
-      authDomain: "SEU-PROJETO.firebaseapp.com",
-      databaseURL: "https://SEU-PROJETO-default-rtdb.firebaseio.com",
-      projectId: "SEU-PROJETO",
-      storageBucket: "SEU-PROJETO.appspot.com",
-      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-      appId: "SEU_APP_ID"
+      apiKey: "AIzaSyBG6MQQjwdXVEslNILJsfc5VG_pVLYpOKc",
+      authDomain: "brasil-ong.firebaseapp.com",
+      databaseURL: "https://brasil-ong-default-rtdb.firebaseio.com",
+      projectId: "brasil-ong",
+      storageBucket: "brasil-ong.firebasestorage.app",
+      messagingSenderId: "424544972501",
+      appId: "1:424544972501:web:46855cd65db716b73f3c5c"
     };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+    const auth = firebase.auth();
 
-    // ==================== CHAT EM TEMPO REAL (sem login) ====================
-    window.toggleChat = () => {
-      document.getElementById('chatWindow').classList.toggle('hidden');
-      document.getElementById('chatBubble').classList.toggle('rotated');
-    };
-
-    window.enviarMensagem = () => {
-      const input = document.getElementById('chatInput');
-      const texto = input.value.trim();
-      if (!texto) return;
-
-      db.ref('chatMensagens').push({
-        texto: texto,
-        nome: "Aluno",
-        timestamp: Date.now()
-      });
-
-      input.value = '';
-    };
-
-    // Carregar mensagens em tempo real
-    db.ref('chatMensagens').on('value', (snapshot) => {
-      const msgs = snapshot.val() || {};
-      const container = document.getElementById('chatMessages');
-      container.innerHTML = '';
-      Object.values(msgs).forEach(msg => {
-        const div = document.createElement('div');
-        div.className = "flex justify-start mb-3";
-        div.innerHTML = `<div class="bg-gray-200 px-5 py-3 rounded-3xl">${msg.nome}: ${msg.texto}</div>`;
-        container.appendChild(div);
-      });
-      container.scrollTop = container.scrollHeight;
-    });
-
-    window.realizarBusca = () => {
-      const termo = document.getElementById('searchInput').value.trim();
-      if (termo) alert(`🔎 Buscando: "${termo}"`);
-    };
-
-    console.log("%c✅ PARTE 3 CONCLUÍDA - Script do Chat funcionando", "color:#009edb; font-size:18px");
-  </script>
-
-  <!-- ==================== PARTE 4 - FUNÇÕES EXTRAS E INICIALIZAÇÃO ==================== -->
-  <script>
-    // Função para editar título e frase depois (você pode mudar aqui)
-    function atualizarTituloENovaFrase() {
-      // Mude o texto aqui depois:
-      document.getElementById('tituloPrincipal').textContent = "Declaração Universal dos Direitos dos Adolescentes";
-      document.getElementById('frasePrincipal').textContent = "
-    }
-
-    // Chama a função ao carregar a página
-    window.onload = () => {
-      atualizarTituloENovaFrase();
-      console.log("%c✅ SITE COMPLETO CARREGADO - Topbar + Chat funcionando", "color:#009edb; font-size:18px");
-    };
-  </script>
-  <!-- ==================== CHAT EM TEMPO REAL (funcionando) ==================== -->
-  <script>
-    // Configuração do Firebase (coloque seus dados aqui se ainda não colocou)
-    const firebaseConfig = {
-      apiKey: "SUA_API_KEY_AQUI",
-      authDomain: "SEU-PROJETO.firebaseapp.com",
-      databaseURL: "https://SEU-PROJETO-default-rtdb.firebaseio.com",
-      projectId: "SEU-PROJETO",
-      storageBucket: "SEU-PROJETO.appspot.com",
-      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-      appId: "SEU_APP_ID"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    // Abrir/Fechar Chat
-    window.toggleChat = () => {
-      const chatWindow = document.getElementById('chatWindow');
-      const chatBubble = document.getElementById('chatBubble');
-      chatWindow.classList.toggle('hidden');
-      chatBubble.classList.toggle('rotated');
-    };
-
-    // Enviar mensagem
-    window.enviarMensagem = () => {
-      const input = document.getElementById('chatInput');
-      const texto = input.value.trim();
-      
-      if (!texto) return;
-
-      db.ref('chatMensagens').push({
-        texto: texto,
-        nome: "Aluno",
-        timestamp: Date.now()
-      });
-
-      input.value = '';
-    };
-
-    // Carregar mensagens em tempo real
-    db.ref('chatMensagens').on('value', (snapshot) => {
-      const mensagens = snapshot.val() || {};
-      const container = document.getElementById('chatMessages');
-      
-      container.innerHTML = '';
-
-      Object.values(mensagens).forEach(msg => {
-        const div = document.createElement('div');
-        div.className = "mb-3";
-        div.innerHTML = `
-          <div class="inline-block bg-gray-200 px-5 py-3 rounded-3xl max-w-[80%]">
-            <strong>${msg.nome}:</strong> ${msg.texto}
-          </div>
-        `;
-        container.appendChild(div);
-      });
-
-      container.scrollTop = container.scrollHeight;
-    });
-
-    console.log("%c✅ Chat em tempo real carregado e funcionando", "color:#009edb; font-size:16px");
-  </script>
-
-  <!-- ==================== CHAT COM ANIMAÇÃO DE 180° ==================== -->
-  <script>
-    // Configuração Firebase (coloque seus dados aqui)
-    const firebaseConfig = {
-  apiKey: "AIzaSyBG6MQQjwdXVEslNILJsfc5VG_pVLYpOKc",
-  authDomain: "brasil-ong.firebaseapp.com",
-  databaseURL: "https://brasil-ong-default-rtdb.firebaseio.com",
-  projectId: "brasil-ong",
-  storageBucket: "brasil-ong.firebasestorage.app",
-  messagingSenderId: "424544972501",
-  appId: "1:424544972501:web:46855cd65db716b73f3c5c",
-  measurementId: "G-WG7JPW00MH"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    // ==================== ANIMAÇÃO DO CHAT (180°) ====================
-    let chatAberto = false;
-
-    window.toggleChat = () => {
-      const bubble = document.getElementById('chatBubble');
-      const windowEl = document.getElementById('chatWindow');
-
-      chatAberto = !chatAberto;
-
-      if (chatAberto) {
-        bubble.classList.add('rotated');   // gira 180°
-        windowEl.classList.remove('hidden');
-      } else {
-        bubble.classList.remove('rotated'); // volta ao normal
-        windowEl.classList.add('hidden');
-      }
-    };
-
-    // ==================== ENVIAR MENSAGEM ====================
-    window.enviarMensagem = () => {
-      const input = document.getElementById('chatInput');
-      const texto = input.value.trim();
-
-      if (!texto) return;
-
-      db.ref('chatMensagens').push({
-        texto: texto,
-        nome: "Aluno",
-        timestamp: Date.now()
-      });
-
-      input.value = '';
-    };
-
-    // ==================== CARREGAR MENSAGENS EM TEMPO REAL ====================
-    db.ref('chatMensagens').on('value', (snapshot) => {
-      const mensagens = snapshot.val() || {};
-      const container = document.getElementById('chatMessages');
-      
-      container.innerHTML = '';
-
-      Object.values(mensagens).forEach(msg => {
-        const div = document.createElement('div');
-        div.className = "mb-4 flex justify-start";
-        div.innerHTML = `
-          <div class="bg-gray-200 px-5 py-3 rounded-3xl max-w-[85%]">
-            <small class="text-xs text-gray-500 block">${msg.nome}</small>
-            ${msg.texto}
-          </div>
-        `;
-        container.appendChild(div);
-      });
-
-      container.scrollTop = container.scrollHeight;
-    });
-
-    console.log("%c✅ Chat com animação de 180° carregado e funcionando", "color:#009edb; font-size:16px");
-  </script>
-
-  <script>
     // ==================== LOGIN COM GOOGLE ====================
     window.mostrarModalLogin = () => {
       document.getElementById('modalLogin').classList.remove('hidden');
@@ -489,15 +293,15 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
     window.loginComGoogle = async () => {
       const provider = new firebase.auth.GoogleAuthProvider();
       try {
-        const result = await firebase.auth().signInWithPopup(provider);
+        const result = await auth.signInWithPopup(provider);
         fecharModalLogin();
-        alert("✅ Login realizado!\n\nAgora você pode enviar mensagens no chat.");
+        alert("✅ Login realizado com sucesso!\n\nAgora você pode enviar mensagens no chat.");
       } catch (error) {
         alert("Erro ao fazer login:\n" + error.message);
       }
     };
 
-    // ==================== CHAT - ABRE SEM LOGIN, MAS SÓ ENVIA DEPOIS DO LOGIN ====================
+    // ==================== CHAT - ABRE SEM LOGIN, ENVIA SÓ APÓS LOGIN ====================
     let chatAberto = false;
 
     window.toggleChat = () => {
@@ -516,8 +320,7 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
     };
 
     window.enviarMensagem = () => {
-      const user = firebase.auth().currentUser;
-
+      const user = auth.currentUser;
       if (!user) {
         alert("Você precisa fazer login com Google para enviar mensagens.");
         mostrarModalLogin();
@@ -530,7 +333,7 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
 
       db.ref('chatMensagens').push({
         texto: texto,
-        nome: user.displayName || user.email.split('@')[0],
+        nome: user.displayName || "Aluno",
         timestamp: Date.now()
       });
 
@@ -557,7 +360,7 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
       container.scrollTop = container.scrollHeight;
     });
 
-    console.log("%c✅ Chat abre sem login, mas só envia após login", "color:#009edb; font-size:16px");
+    console.log("%c✅ Login e Chat corrigidos com sucesso", "color:#009edb; font-size:18px");
   </script>
 </body>
 </html>
