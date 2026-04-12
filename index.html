@@ -402,7 +402,22 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
   </script>
 
   <script>
-    // ==================== CHAT + BOTÃO DE EXCLUIR (SÓ PARA VOCÊ) ====================
+    // ==================== CONFIGURAÇÃO FIREBASE ====================
+    const firebaseConfig = {
+      apiKey: "AIzaSyBG6MQQjwdXVEslNILJsfc5VG_pVLYpOKc",
+      authDomain: "brasil-ong.firebaseapp.com",
+      databaseURL: "https://brasil-ong-default-rtdb.firebaseio.com",
+      projectId: "brasil-ong",
+      storageBucket: "brasil-ong.firebasestorage.app",
+      messagingSenderId: "424544972501",
+      appId: "1:424544972501:web:46855cd65db716b73f3c5c"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const auth = firebase.auth();
+
+    // ==================== CHAT + EXCLUSÃO ====================
     let chatAberto = false;
 
     window.toggleChat = () => {
@@ -441,7 +456,7 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
       input.value = '';
     };
 
-    // Carregar mensagens com lixeira (só para lucaslcloux12@gmail.com)
+    // Carregar mensagens com lixeira (só para você)
     db.ref('chatMensagens').on('value', (snapshot) => {
       const mensagens = snapshot.val() || {};
       const container = document.getElementById('chatMessages');
@@ -461,7 +476,7 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
           
           ${podeExcluir ? `
           <button onclick="excluirMensagem('${key}')" 
-                  class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm opacity-0 group-hover:opacity-100">
+                  class="absolute -top-1 -right-2 bg-red-500 hover:bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm opacity-0 group-hover:opacity-100">
             🗑
           </button>` : ''}
         `;
@@ -471,14 +486,14 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
       container.scrollTop = container.scrollHeight;
     });
 
-    // Função para excluir
+    // Função para excluir mensagem
     window.excluirMensagem = (key) => {
       if (confirm("Tem certeza que deseja excluir esta mensagem?")) {
         db.ref('chatMensagens/' + key).remove();
       }
     };
 
-    console.log("%c✅ Lixeira ativada - só você pode excluir", "color:#009edb; font-size:16px");
+    console.log("%c✅ Chat com lixeira carregado", "color:#009edb; font-size:18px");
   </script>
 </body>
 </html>
