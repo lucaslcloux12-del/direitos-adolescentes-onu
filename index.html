@@ -269,7 +269,7 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
 
   <!-- ==================== SCRIPT FINAL CORRIGIDO ==================== -->
   <script>
-    // Configuração Firebase
+    // ==================== FIREBASE ====================
     const firebaseConfig = {
       apiKey: "AIzaSyBG6MQQjwdXVEslNILJsfc5VG_pVLYpOKc",
       authDomain: "brasil-ong.firebaseapp.com",
@@ -284,12 +284,35 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
     const db = firebase.database();
     const auth = firebase.auth();
 
-    // Toggle do chat com animação
+    // ==================== LOGIN ====================
+    window.mostrarModalLogin = () => {
+      document.getElementById('modalLogin').classList.remove('hidden');
+    };
+
+    window.fecharModalLogin = () => {
+      document.getElementById('modalLogin').classList.add('hidden');
+    };
+
+    window.loginComGoogle = async () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      try {
+        await auth.signInWithPopup(provider);
+        fecharModalLogin();
+        alert("✅ Login realizado! Agora você pode excluir mensagens.");
+      } catch (error) {
+        alert("Erro no login: " + error.message);
+      }
+    };
+
+    // ==================== CHAT ====================
     let chatAberto = false;
+
     window.toggleChat = () => {
       const bubble = document.getElementById('chatBubble');
       const windowEl = document.getElementById('chatWindow');
+
       chatAberto = !chatAberto;
+
       if (chatAberto) {
         bubble.classList.add('rotated');
         windowEl.classList.remove('hidden');
@@ -299,22 +322,29 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
       }
     };
 
-    // Enviar mensagem
     window.enviarMensagem = () => {
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Faça login para enviar mensagens.");
+        mostrarModalLogin();
+        return;
+      }
+
       const input = document.getElementById('chatInput');
       const texto = input.value.trim();
       if (!texto) return;
 
       db.ref('chatMensagens').push({
         texto: texto,
-        nome: "Aluno",
+        nome: user.displayName || "Aluno",
+        email: user.email,
         timestamp: Date.now()
       });
 
       input.value = '';
     };
 
-    // Carregar mensagens
+    // Carregar mensagens + lixeira só para você
     db.ref('chatMensagens').on('value', (snapshot) => {
       const mensagens = snapshot.val() || {};
       const container = document.getElementById('chatMessages');
@@ -322,23 +352,37 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
 
       Object.keys(mensagens).forEach(key => {
         const msg = mensagens[key];
+        const podeExcluir = (msg.email === "lucaslcloux12@gmail.com");
+
         const div = document.createElement('div');
-        div.className = "mb-4 flex justify-start";
+        div.className = "mb-4 flex justify-start group relative";
         div.innerHTML = `
           <div class="bg-gray-200 px-5 py-3 rounded-3xl max-w-[85%]">
             <small class="text-xs text-gray-500">${msg.nome}</small>
             <p>${msg.texto}</p>
           </div>
+          
+          ${podeExcluir ? `
+          <button onclick="excluirMensagem('${key}')" 
+                  class="absolute -top-1 -right-2 bg-red-500 hover:bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm opacity-0 group-hover:opacity-100">
+            🗑
+          </button>` : ''}
         `;
         container.appendChild(div);
       });
+
       container.scrollTop = container.scrollHeight;
     });
 
-    console.log("%cChat carregado", "color:#009edb");
+    window.excluirMensagem = (key) => {
+      if (confirm("Tem certeza que deseja excluir esta mensagem?")) {
+        db.ref('chatMensagens/' + key).remove();
+      }
+    };
+
+    console.log("%c✅ Chat com exclusão corrigido", "color:#009edb; font-size:18px");
   </script>
 
-	  <script>
     // Função para mudar o conteúdo da página
     function mostrarSecao(secao) {
       // Esconde tudo
