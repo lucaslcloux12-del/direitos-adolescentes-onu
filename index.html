@@ -400,37 +400,5 @@ Reconhecendo os adolescentes como sujeitos de direitos, esta declaração estabe
 
     console.log("%c✅ Botões da topbar e busca adicionados", "color:#009edb; font-size:18px");
   </script>
-
-	<script>
-  // Função para excluir uma mensagem do chat
-  window.excluirMensagem = function(key) {
-    if (confirm("Tem certeza que deseja excluir esta mensagem?")) {
-      db.ref('chatMensagens/' + key).remove();
-      console.log("Mensagem excluída: " + key);
-    }
-  };
-
-  // Exemplo de como carregar as mensagens com botão de excluir
-  db.ref('chatMensagens').on('value', (snapshot) => {
-    const mensagens = snapshot.val() || {};
-    const container = document.getElementById('chatMessages');
-    container.innerHTML = '';
-
-    Object.keys(mensagens).forEach(function(key) {
-      const msg = mensagens[key];
-
-      const div = document.createElement('div');
-      div.innerHTML = `
-        <div style="margin-bottom: 10px; padding: 10px; background: #f1f1f1; border-radius: 8px;">
-          <strong>${msg.nome}:</strong> ${msg.texto}
-          <button onclick="excluirMensagem('${key}')" style="margin-left: 10px; color: red; font-size: 12px;">🗑 Excluir</button>
-        </div>
-      `;
-      container.appendChild(div);
-    });
-
-    container.scrollTop = container.scrollHeight;
-  });
-</script>
 </body>
 </html>
